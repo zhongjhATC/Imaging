@@ -325,6 +325,7 @@ public class IMGImage {
     }
 
     public IMGHoming getStartHoming(float scrollX, float scrollY) {
+        Log.d(TAG,"getStartHoming: scrollX(" + scrollX + ")");
         return new IMGHoming(scrollX, scrollY, getScale(), getRotate());
     }
 
