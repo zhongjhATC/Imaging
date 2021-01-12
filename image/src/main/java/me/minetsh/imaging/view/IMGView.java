@@ -143,8 +143,6 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     /**
      * 开始了矫正动画
-     * @param sHoming
-     * @param eHoming
      */
     private void startHoming(IMGHoming sHoming, IMGHoming eHoming) {
         Log.d(TAG,"startHoming");
@@ -550,6 +548,9 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
         mImage.onScaleEnd();
     }
 
+    /**
+     * 标记着动画的更新
+     */
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
         Log.d(TAG,"onAnimationUpdate");
@@ -604,6 +605,9 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
         return true;
     }
 
+    /**
+     * 标记着动画的开始
+     */
     @Override
     public void onAnimationStart(Animator animation) {
         Log.d(TAG,"onAnimationStart");
@@ -613,6 +617,9 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
         mImage.onHomingStart(mHomingAnimator.isRotate());
     }
 
+    /**
+     * 标记着动画的结束
+     */
     @Override
     public void onAnimationEnd(Animator animation) {
         Log.d(TAG,"onAnimationEnd");

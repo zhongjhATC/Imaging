@@ -325,13 +325,13 @@ public class IMGImage {
     }
 
     public IMGHoming getStartHoming(float scrollX, float scrollY) {
-        Log.d(TAG,"getStartHoming: scrollX(" + scrollX + ")");
+        Log.d(TAG, "getStartHoming: scrollX(" + scrollX + ") scrollY(" + scrollY + ") getScale(" + getScale() + ") getRotate(" + getRotate() + ")");
         return new IMGHoming(scrollX, scrollY, getScale(), getRotate());
     }
 
     public IMGHoming getEndHoming(float scrollX, float scrollY) {
         IMGHoming homing = new IMGHoming(scrollX, scrollY, getScale(), getTargetRotate());
-
+        Log.d(TAG, "getEndHoming: homing.x(" +   homing.x + ") homing.y(" +   homing.y + ") homing.scale(" +   homing.scale + ") homing.rotate(" + homing.rotate + ")");
         if (mMode == IMGMode.CLIP) {
             RectF frame = new RectF(mClipWin.getTargetFrame());
             frame.offset(scrollX, scrollY);
@@ -377,6 +377,7 @@ public class IMGImage {
             isRequestToBaseFitting = false;
         }
 
+        Log.d(TAG, "getEndHoming: homing.x(" +   homing.x + ") homing.y(" +   homing.y + ") homing.scale(" +   homing.scale + ") homing.rotate(" + homing.rotate + ")");
         return homing;
     }
 
