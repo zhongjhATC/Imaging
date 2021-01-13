@@ -70,6 +70,13 @@ abstract class IMGEditBaseActivity extends Activity implements View.OnClickListe
         mColorGroup.setOnCheckedChangeListener(this);
 
         mLayoutOpSub = findViewById(R.id.layout_op_sub);
+
+        mImgView.addListener(new IMGView.Listener() {
+            @Override
+            public void resetModel() {
+                mColorGroup.clearCheck();
+            }
+        });
     }
 
     @Override
@@ -129,7 +136,8 @@ abstract class IMGEditBaseActivity extends Activity implements View.OnClickListe
 
     @Override
     public final void onCheckedChanged(RadioGroup group, int checkedId) {
-        onColorChanged(mColorGroup.getCheckColor());
+        if (checkedId != -1)
+            onColorChanged(mColorGroup.getCheckColor());
     }
 
     public void setOpDisplay(int op) {

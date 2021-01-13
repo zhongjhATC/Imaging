@@ -112,6 +112,13 @@ public class IMGEditActivity extends IMGEditBaseActivity {
 
     @Override
     public void onUndoClick() {
+        if (mImgView.getMode() == IMGMode.NONE) {
+            // 如果当前是none，判断上一个是不是从 有操作 - 变成双指伸缩图片
+            if (mImgView.getMode() != IMGMode.DOODLE && mImgView.getPreMode() == IMGMode.DOODLE)
+                onModeClick(IMGMode.DOODLE);
+            if (mImgView.getMode() != IMGMode.MOSAIC && mImgView.getPreMode() == IMGMode.MOSAIC)
+                onModeClick(IMGMode.MOSAIC);
+        }
         IMGMode mode = mImgView.getMode();
         if (mode == IMGMode.DOODLE) {
             mImgView.undoDoodle();
@@ -179,6 +186,8 @@ public class IMGEditActivity extends IMGEditBaseActivity {
 
     @Override
     public void onColorChanged(int checkedColor) {
+        if (mImgView.getMode() != IMGMode.DOODLE)
+            onModeClick(IMGMode.DOODLE);
         mImgView.setPenColor(checkedColor);
     }
 }

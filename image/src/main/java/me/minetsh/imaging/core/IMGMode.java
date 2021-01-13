@@ -7,8 +7,8 @@ package me.minetsh.imaging.core;
 public enum IMGMode {
 
     NONE,
-    DOODLE,
-    MOSAIC,
-    CLIP
+    DOODLE, // 涂鸦
+    MOSAIC, // 马赛克
+    CLIP // 裁剪
 
 }

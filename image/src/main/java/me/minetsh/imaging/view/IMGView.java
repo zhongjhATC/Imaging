@@ -60,6 +60,16 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     private static final boolean DEBUG = true;
 
+    public interface Listener {
+
+        /**
+         * 双手触控屏幕的时候会重置当前模式
+         */
+        void resetModel();
+    }
+
+    private Listener listener;
+
     {
         // 涂鸦画刷
         mDoodlePaint.setStyle(Paint.Style.STROKE);
@@ -102,12 +112,17 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
         invalidate();
     }
 
+    public void addListener(Listener listener) {
+        this.listener = listener;
+    }
+
     /**
      * 设置模式
+     *
      * @param mode 模式
      */
     public void setMode(IMGMode mode) {
-        Log.d(TAG,"setMode");
+        Log.d(TAG, "setMode");
         // 保存现在的编辑模式
         mPreMode = mImage.getMode();
 
@@ -124,7 +139,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
      * 是否真正修正归位
      */
     boolean isHoming() {
-        Log.d(TAG,"isHoming");
+        Log.d(TAG, "isHoming");
         return mHomingAnimator != null
                 && mHomingAnimator.isRunning();
     }
@@ -134,7 +149,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
      * 假设移动图片到某个区别或者放大缩小时，改方法用于变回原样
      */
     private void onHoming() {
-        Log.d(TAG,"onHoming");
+        Log.d(TAG, "onHoming");
         invalidate();
         stopHoming();
         startHoming(mImage.getStartHoming(getScrollX(), getScrollY()),
@@ -145,7 +160,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
      * 开始了矫正动画
      */
     private void startHoming(IMGHoming sHoming, IMGHoming eHoming) {
-        Log.d(TAG,"startHoming");
+        Log.d(TAG, "startHoming");
         if (mHomingAnimator == null) {
             mHomingAnimator = new IMGHomingAnimator();
             mHomingAnimator.addUpdateListener(this);
@@ -159,14 +174,14 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
      * 停止当前的矫正区域动画
      */
     private void stopHoming() {
-        Log.d(TAG,"stopHoming");
+        Log.d(TAG, "stopHoming");
         if (mHomingAnimator != null) {
             mHomingAnimator.cancel();
         }
     }
 
     public void doRotate() {
-        Log.d(TAG,"doRotate");
+        Log.d(TAG, "doRotate");
         if (!isHoming()) {
             mImage.rotate(-90);
             onHoming();
@@ -174,68 +189,78 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
     }
 
     public void resetClip() {
-        Log.d(TAG,"resetClip");
+        Log.d(TAG, "resetClip");
         mImage.resetClip();
         onHoming();
     }
 
     public void doClip() {
-        Log.d(TAG,"doClip");
+        Log.d(TAG, "doClip");
         mImage.clip(getScrollX(), getScrollY());
         setMode(mPreMode);
         onHoming();
     }
 
     public void cancelClip() {
-        Log.d(TAG,"cancelClip");
+        Log.d(TAG, "cancelClip");
         mImage.toBackupClip();
         setMode(mPreMode);
     }
 
     public void setPenColor(int color) {
-        Log.d(TAG,"setPenColor");
+        Log.d(TAG, "setPenColor");
         mPen.setColor(color);
     }
 
     public boolean isDoodleEmpty() {
-        Log.d(TAG,"isDoodleEmpty");
+        Log.d(TAG, "isDoodleEmpty");
         return mImage.isDoodleEmpty();
     }
 
     public void undoDoodle() {
-        Log.d(TAG,"undoDoodle");
+        Log.d(TAG, "undoDoodle");
         mImage.undoDoodle();
         invalidate();
     }
 
     public boolean isMosaicEmpty() {
-        Log.d(TAG,"isMosaicEmpty");
+        Log.d(TAG, "isMosaicEmpty");
         return mImage.isMosaicEmpty();
     }
 
     public void undoMosaic() {
-        Log.d(TAG,"undoMosaic");
+        Log.d(TAG, "undoMosaic");
         mImage.undoMosaic();
         invalidate();
     }
 
     /**
      * 获取当前模式
+     *
      * @return 模式
      */
     public IMGMode getMode() {
-        Log.d(TAG,"getMode");
+        Log.d(TAG, "getMode");
         return mImage.getMode();
+    }
+
+    /**
+     * 获取上一个模式
+     * @return 模式
+     */
+    public IMGMode getPreMode() {
+        Log.d(TAG, "getPreMode");
+        return mPreMode;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Log.d(TAG,"onDraw");
+        Log.d(TAG, "onDraw");
         onDrawImages(canvas);
     }
 
     private void onDrawImages(Canvas canvas) {
-        Log.d(TAG,"onDrawImages");
+        Log.d(TAG, "onDrawImages");
         canvas.save();
 
         // clip 中心旋转
@@ -300,7 +325,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
     }
 
     public Bitmap saveBitmap() {
-        Log.d(TAG,"saveBitmap");
+        Log.d(TAG, "saveBitmap");
         mImage.stickAll();
 
         float scale = 1f / mImage.getScale();
@@ -332,7 +357,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        Log.d(TAG,"onLayout");
+        Log.d(TAG, "onLayout");
         super.onLayout(changed, left, top, right, bottom);
         if (changed) {
             mImage.onWindowChanged(right - left, bottom - top);
@@ -340,7 +365,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
     }
 
     public <V extends View & IMGSticker> void addStickerView(V stickerView, LayoutParams params) {
-        Log.d(TAG,"addStickerView");
+        Log.d(TAG, "addStickerView");
         if (stickerView != null) {
 
             addView(stickerView, params);
@@ -351,7 +376,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
     }
 
     public void addStickerText(IMGText text) {
-        Log.d(TAG,"addStickerText");
+        Log.d(TAG, "addStickerText");
         IMGStickerTextView textView = new IMGStickerTextView(getContext());
 
         textView.setText(text);
@@ -372,7 +397,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        Log.d(TAG,"onInterceptTouchEvent");
+        Log.d(TAG, "onInterceptTouchEvent");
         if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
             return onInterceptTouch(ev) || super.onInterceptTouchEvent(ev);
         }
@@ -380,19 +405,22 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
     }
 
     boolean onInterceptTouch(MotionEvent event) {
-        Log.d(TAG,"onInterceptTouch");
-        if (isHoming()) {
-            stopHoming();
-            return true;
-        } else if (mImage.getMode() == IMGMode.CLIP) {
-            return true;
-        }
+//        Log.d(TAG, "onInterceptTouch");
+//        if (isHoming()) {
+//            stopHoming();
+//            Log.d(TAG,"onInterceptTouch true stopHoming");
+//            return true;
+//        } else if (mImage.getMode() == IMGMode.CLIP) {
+//            Log.d(TAG,"onInterceptTouch true IMGMode.CLIP");
+//            return true;
+//        }
+//        Log.d(TAG,"onInterceptTouch false");
         return false;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Log.d(TAG,"onTouchEvent");
+        Log.d(TAG, "onTouchEvent");
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 removeCallbacks(this);
@@ -406,7 +434,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
     }
 
     boolean onTouch(MotionEvent event) {
-        Log.d(TAG,"onTouch");
+        Log.d(TAG, "onTouch");
 
         if (isHoming()) {
             // Homing
@@ -424,6 +452,10 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
         } else if (mPointerCount > 1) {
             onPathDone();
             handled |= onTouchNONE(event);
+
+            // 取消涂鸦或者别的模式
+            this.listener.resetModel();
+            setMode(IMGMode.NONE);
         } else {
             handled |= onTouchPath(event);
         }
@@ -444,12 +476,12 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
 
     private boolean onTouchNONE(MotionEvent event) {
-        Log.d(TAG,"onTouchNONE");
+        Log.d(TAG, "onTouchNONE");
         return mGDetector.onTouchEvent(event);
     }
 
     private boolean onTouchPath(MotionEvent event) {
-        Log.d(TAG,"onTouchPath");
+        Log.d(TAG, "onTouchPath");
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 return onPathBegin(event);
@@ -463,14 +495,14 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
     }
 
     private boolean onPathBegin(MotionEvent event) {
-        Log.d(TAG,"onPathBegin");
+        Log.d(TAG, "onPathBegin");
         mPen.reset(event.getX(), event.getY());
         mPen.setIdentity(event.getPointerId(0));
         return true;
     }
 
     private boolean onPathMove(MotionEvent event) {
-        Log.d(TAG,"onPathMove");
+        Log.d(TAG, "onPathMove");
         if (mPen.isIdentity(event.getPointerId(0))) {
             mPen.lineTo(event.getX(), event.getY());
             invalidate();
@@ -480,7 +512,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
     }
 
     private boolean onPathDone() {
-        Log.d(TAG,"onPathDone");
+        Log.d(TAG, "onPathDone");
         if (mPen.isEmpty()) {
             return false;
         }
@@ -492,7 +524,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     @Override
     public void run() {
-        Log.d(TAG,"run");
+        Log.d(TAG, "run");
         // 稳定触发
         if (!onSteady()) {
             postDelayed(this, 500);
@@ -513,7 +545,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     @Override
     protected void onDetachedFromWindow() {
-        Log.d(TAG,"onDetachedFromWindow");
+        Log.d(TAG, "onDetachedFromWindow");
         super.onDetachedFromWindow();
         removeCallbacks(this);
         mImage.release();
@@ -521,7 +553,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
-        Log.d(TAG,"onScale");
+        Log.d(TAG, "onScale");
         if (mPointerCount > 1) {
             mImage.onScale(detector.getScaleFactor(),
                     getScrollX() + detector.getFocusX(),
@@ -534,7 +566,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
-        Log.d(TAG,"onScaleBegin");
+        Log.d(TAG, "onScaleBegin");
         if (mPointerCount > 1) {
             mImage.onScaleBegin();
             return true;
@@ -544,7 +576,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     @Override
     public void onScaleEnd(ScaleGestureDetector detector) {
-        Log.d(TAG,"onScaleEnd");
+        Log.d(TAG, "onScaleEnd");
         mImage.onScaleEnd();
     }
 
@@ -553,14 +585,17 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
      */
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
-        Log.d(TAG,"onAnimationUpdate");
+        Log.d(TAG, "onAnimationUpdate");
         mImage.onHoming(animation.getAnimatedFraction());
         toApplyHoming((IMGHoming) animation.getAnimatedValue());
     }
 
-
+    /**
+     * 设置图片回归原位
+     */
     private void toApplyHoming(IMGHoming homing) {
-        Log.d(TAG,"toApplyHoming0");
+        Log.d(TAG, "toApplyHoming " +
+                "homing.scale(" + homing.scale + ")homing.rotate(" + homing.rotate + ")homing.x(" + homing.x + ")homing.y" + homing.y + ")");
         mImage.setScale(homing.scale);
         mImage.setRotate(homing.rotate);
         if (!onScrollTo(Math.round(homing.x), Math.round(homing.y))) {
@@ -568,8 +603,11 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
         }
     }
 
+    /**
+     * 设置图片回归原位
+     */
     private boolean onScrollTo(int x, int y) {
-        Log.d(TAG,"onScrollTo");
+        Log.d(TAG, "onScrollTo");
         if (getScrollX() != x || getScrollY() != y) {
             scrollTo(x, y);
             return true;
@@ -579,21 +617,21 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     @Override
     public <V extends View & IMGSticker> void onDismiss(V stickerView) {
-        Log.d(TAG,"onDismiss");
+        Log.d(TAG, "onDismiss");
         mImage.onDismiss(stickerView);
         invalidate();
     }
 
     @Override
     public <V extends View & IMGSticker> void onShowing(V stickerView) {
-        Log.d(TAG,"onShowing");
+        Log.d(TAG, "onShowing");
         mImage.onShowing(stickerView);
         invalidate();
     }
 
     @Override
     public <V extends View & IMGSticker> boolean onRemove(V stickerView) {
-        Log.d(TAG,"onRemove");
+        Log.d(TAG, "onRemove");
         if (mImage != null) {
             mImage.onRemoveSticker(stickerView);
         }
@@ -610,7 +648,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
      */
     @Override
     public void onAnimationStart(Animator animation) {
-        Log.d(TAG,"onAnimationStart");
+        Log.d(TAG, "onAnimationStart");
         if (DEBUG) {
             Log.d(TAG, "onAnimationStart");
         }
@@ -622,7 +660,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
      */
     @Override
     public void onAnimationEnd(Animator animation) {
-        Log.d(TAG,"onAnimationEnd");
+        Log.d(TAG, "onAnimationEnd");
         if (DEBUG) {
             Log.d(TAG, "onAnimationEnd");
         }
@@ -633,7 +671,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     @Override
     public void onAnimationCancel(Animator animation) {
-        Log.d(TAG,"onAnimationCancel");
+        Log.d(TAG, "onAnimationCancel");
         if (DEBUG) {
             Log.d(TAG, "onAnimationCancel");
         }
@@ -642,12 +680,12 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     @Override
     public void onAnimationRepeat(Animator animation) {
-        Log.d(TAG,"onAnimationRepeat");
+        Log.d(TAG, "onAnimationRepeat");
         // empty implementation.
     }
 
     private boolean onScroll(float dx, float dy) {
-        Log.d(TAG,"onScroll");
+        Log.d(TAG, "onScroll");
         IMGHoming homing = mImage.onScroll(getScrollX(), getScrollY(), -dx, -dy);
         if (homing != null) {
             toApplyHoming(homing);
