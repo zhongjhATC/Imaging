@@ -391,11 +391,21 @@ public class IMGImage {
         if (path == null) return;
 
         float scale = 1f / getScale();
-
+        Log.d(TAG,"addPath getScale()" + getScale());
+        Log.d(TAG,"addPath scale" + scale);
         M.setTranslate(sx, sy);
+        Log.d(TAG,"addPath sx" + sx);
+        Log.d(TAG,"addPath sy" + sy);
         M.postRotate(-getRotate(), mClipFrame.centerX(), mClipFrame.centerY());
+        Log.d(TAG,"addPath -getRotate()" + -getRotate());
+        Log.d(TAG,"addPath mClipFrame.centerX()" + mClipFrame.centerX());
+        Log.d(TAG,"addPath mClipFrame.centerY()" + mClipFrame.centerY());
         M.postTranslate(-mFrame.left, -mFrame.top);
+        Log.d(TAG,"addPath -mFrame.left" + -mFrame.left);
+        Log.d(TAG,"addPath -mFrame.top" + -mFrame.top);
         M.postScale(scale, scale);
+        Log.d(TAG,"addPath scale" + scale);
+        // 矩阵变换
         path.transform(M);
 
         switch (path.getMode()) {
