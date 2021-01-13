@@ -246,6 +246,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     /**
      * 获取上一个模式
+     *
      * @return 模式
      */
     public IMGMode getPreMode() {
@@ -253,12 +254,18 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
         return mPreMode;
     }
 
+    /**
+     * 重新在IMGView画图
+     */
     @Override
     protected void onDraw(Canvas canvas) {
         Log.d(TAG, "onDraw");
         onDrawImages(canvas);
     }
 
+    /**
+     * 重新在IMGView画图
+     */
     private void onDrawImages(Canvas canvas) {
         Log.d(TAG, "onDrawImages");
         canvas.save();
@@ -395,6 +402,9 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
         addStickerView(textView, layoutParams);
     }
 
+    /**
+     * 处理点击分发事件
+     */
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         Log.d(TAG, "onInterceptTouchEvent");
@@ -404,35 +414,48 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
         return super.onInterceptTouchEvent(ev);
     }
 
+    /**
+     * 处理可以直接中断当前伸缩，继续按照自己意愿伸缩，增强流畅度
+     */
     boolean onInterceptTouch(MotionEvent event) {
-//        Log.d(TAG, "onInterceptTouch");
-//        if (isHoming()) {
-//            stopHoming();
-//            Log.d(TAG,"onInterceptTouch true stopHoming");
-//            return true;
-//        } else if (mImage.getMode() == IMGMode.CLIP) {
-//            Log.d(TAG,"onInterceptTouch true IMGMode.CLIP");
-//            return true;
-//        }
-//        Log.d(TAG,"onInterceptTouch false");
+        Log.d(TAG, "onInterceptTouch");
+        if (isHoming()) {
+            stopHoming();
+            Log.d(TAG, "onInterceptTouch true stopHoming");
+            return true;
+        } else if (mImage.getMode() == IMGMode.CLIP) {
+            Log.d(TAG, "onInterceptTouch true IMGMode.CLIP");
+            return true;
+        }
+        Log.d(TAG, "onInterceptTouch false");
         return false;
     }
 
+    /**
+     * 处理触屏事件，里面的延迟和取消延迟也是为了伸缩图片体验性提高
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         Log.d(TAG, "onTouchEvent");
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
+                // 取消延迟
+                Log.d(TAG, "onTouchEvent 取消延迟");
                 removeCallbacks(this);
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                // 取消或者离开触屏延迟1.2秒
+                Log.d(TAG, "onTouchEvent 延迟1200");
                 postDelayed(this, 1200);
                 break;
         }
         return onTouch(event);
     }
 
+    /**
+     * 处理触屏事件.详情
+     */
     boolean onTouch(MotionEvent event) {
         Log.d(TAG, "onTouch");
 
@@ -480,6 +503,9 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
         return mGDetector.onTouchEvent(event);
     }
 
+    /**
+     * 画笔线
+     */
     private boolean onTouchPath(MotionEvent event) {
         Log.d(TAG, "onTouchPath");
         switch (event.getActionMasked()) {
@@ -494,6 +520,9 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
         return false;
     }
 
+    /**
+     * 钢笔初始化
+     */
     private boolean onPathBegin(MotionEvent event) {
         Log.d(TAG, "onPathBegin");
         mPen.reset(event.getX(), event.getY());
@@ -501,6 +530,9 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
         return true;
     }
 
+    /**
+     * 画线
+     */
     private boolean onPathMove(MotionEvent event) {
         Log.d(TAG, "onPathMove");
         if (mPen.isIdentity(event.getPointerId(0))) {
@@ -511,6 +543,9 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
         return false;
     }
 
+    /**
+     * 画线完成
+     */
     private boolean onPathDone() {
         Log.d(TAG, "onPathDone");
         if (mPen.isEmpty()) {
@@ -713,6 +748,9 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
         }
     }
 
+    /**
+     * 钢笔实体
+     */
     private static class Pen extends IMGPath {
 
         private int identity = Integer.MIN_VALUE;
