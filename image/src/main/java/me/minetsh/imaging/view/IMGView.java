@@ -103,7 +103,9 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     private void initialize(Context context) {
         mPen.setMode(mImage.getMode());
+        // 手势监听类
         mGDetector = new GestureDetector(context, new MoveAdapter());
+        // 用于处理缩放的工具类
         mSGDetector = new ScaleGestureDetector(context, this);
     }
 
@@ -643,6 +645,8 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
      */
     private boolean onScrollTo(int x, int y) {
         Log.d(TAG, "onScrollTo");
+        Log.d(TAG, "onScrollTo x" + x);
+        Log.d(TAG, "onScrollTo y" + y);
         if (getScrollX() != x || getScrollY() != y) {
             scrollTo(x, y);
             return true;
@@ -721,6 +725,8 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     private boolean onScroll(float dx, float dy) {
         Log.d(TAG, "onScroll");
+        Log.d("Scroll ScrollX", getScaleX() + "");
+        Log.d("Scroll ScrollY", getScrollY() + "");
         IMGHoming homing = mImage.onScroll(getScrollX(), getScrollY(), -dx, -dy);
         if (homing != null) {
             toApplyHoming(homing);
@@ -753,6 +759,9 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
      */
     private static class Pen extends IMGPath {
 
+        /**
+         * event的身份证
+         */
         private int identity = Integer.MIN_VALUE;
 
         void reset() {

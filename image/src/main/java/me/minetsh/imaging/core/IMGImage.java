@@ -141,6 +141,7 @@ public class IMGImage {
     }
 
     public IMGImage() {
+        Log.d(TAG, "IMGImage");
         mImage = DEFAULT_IMAGE;
 
         if (mMode == IMGMode.CLIP) {
@@ -149,6 +150,7 @@ public class IMGImage {
     }
 
     public void setBitmap(Bitmap bitmap) {
+        Log.d(TAG, "setBitmap");
         if (bitmap == null || bitmap.isRecycled()) {
             return;
         }
@@ -167,10 +169,12 @@ public class IMGImage {
     }
 
     public IMGMode getMode() {
+        Log.d(TAG, "getMode");
         return mMode;
     }
 
     public void setMode(IMGMode mode) {
+        Log.d(TAG, "setMode");
 
         if (this.mMode == mode) return;
 
@@ -210,6 +214,7 @@ public class IMGImage {
 
     // TODO
     private void rotateStickers(float rotate) {
+        Log.d(TAG, "rotateStickers");
         M.setRotate(rotate, mClipFrame.centerX(), mClipFrame.centerY());
         for (IMGSticker sticker : mBackStickers) {
             M.mapRect(sticker.getFrame());
@@ -220,6 +225,7 @@ public class IMGImage {
     }
 
     private void initShadePaint() {
+        Log.d(TAG, "initShadePaint");
         if (mShadePaint == null) {
             mShadePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             mShadePaint.setColor(COLOR_SHADE);
@@ -228,26 +234,31 @@ public class IMGImage {
     }
 
     public boolean isMosaicEmpty() {
+        Log.d(TAG, "isMosaicEmpty");
         return mMosaics.isEmpty();
     }
 
     public boolean isDoodleEmpty() {
+        Log.d(TAG, "isDoodleEmpty");
         return mDoodles.isEmpty();
     }
 
     public void undoDoodle() {
+        Log.d(TAG, "undoDoodle");
         if (!mDoodles.isEmpty()) {
             mDoodles.remove(mDoodles.size() - 1);
         }
     }
 
     public void undoMosaic() {
+        Log.d(TAG, "undoMosaic");
         if (!mMosaics.isEmpty()) {
             mMosaics.remove(mMosaics.size() - 1);
         }
     }
 
     public RectF getClipFrame() {
+        Log.d(TAG, "getClipFrame");
         return mClipFrame;
     }
 
@@ -256,6 +267,7 @@ public class IMGImage {
      * 因此需要将视图窗口平移到新的旋转中心位置。
      */
     public IMGHoming clip(float scrollX, float scrollY) {
+        Log.d(TAG, "clip");
         RectF frame = mClipWin.getOffsetFrame(scrollX, scrollY);
 
         M.setRotate(-getRotate(), mClipFrame.centerX(), mClipFrame.centerY());
@@ -269,6 +281,7 @@ public class IMGImage {
     }
 
     public void toBackupClip() {
+        Log.d(TAG, "toBackupClip");
         M.setScale(getScale(), getScale());
         M.postTranslate(mFrame.left, mFrame.top);
         M.mapRect(mClipFrame, mBackupClipFrame);
@@ -277,6 +290,7 @@ public class IMGImage {
     }
 
     public void resetClip() {
+        Log.d(TAG, "resetClip");
         // TODO 就近旋转
         setTargetRotate(getRotate() - getRotate() % 360);
         mClipFrame.set(mFrame);
@@ -284,6 +298,7 @@ public class IMGImage {
     }
 
     private void makeMosaicBitmap() {
+        Log.d(TAG, "makeMosaicBitmap");
         if (mMosaicImage != null || mImage == null) {
             return;
         }
@@ -308,6 +323,7 @@ public class IMGImage {
     }
 
     private void onImageChanged() {
+        Log.d(TAG, "onImageChanged");
         isInitialHoming = false;
         onWindowChanged(mWindow.width(), mWindow.height());
 
@@ -321,6 +337,7 @@ public class IMGImage {
     }
 
     public boolean onClipHoming() {
+        Log.d(TAG, "onClipHoming");
         return mClipWin.homing();
     }
 
@@ -331,7 +348,7 @@ public class IMGImage {
 
     public IMGHoming getEndHoming(float scrollX, float scrollY) {
         IMGHoming homing = new IMGHoming(scrollX, scrollY, getScale(), getTargetRotate());
-        Log.d(TAG, "getEndHoming: homing.x(" +   homing.x + ") homing.y(" +   homing.y + ") homing.scale(" +   homing.scale + ") homing.rotate(" + homing.rotate + ")");
+        Log.d(TAG, "getEndHoming: homing.x(" + homing.x + ") homing.y(" + homing.y + ") homing.scale(" + homing.scale + ") homing.rotate(" + homing.rotate + ")");
         if (mMode == IMGMode.CLIP) {
             RectF frame = new RectF(mClipWin.getTargetFrame());
             frame.offset(scrollX, scrollY);
@@ -377,11 +394,12 @@ public class IMGImage {
             isRequestToBaseFitting = false;
         }
 
-        Log.d(TAG, "getEndHoming: homing.x(" +   homing.x + ") homing.y(" +   homing.y + ") homing.scale(" +   homing.scale + ") homing.rotate(" + homing.rotate + ")");
+        Log.d(TAG, "getEndHoming: homing.x(" + homing.x + ") homing.y(" + homing.y + ") homing.scale(" + homing.scale + ") homing.rotate(" + homing.rotate + ")");
         return homing;
     }
 
     public <S extends IMGSticker> void addSticker(S sticker) {
+        Log.d(TAG, "addSticker");
         if (sticker != null) {
             moveToForeground(sticker);
         }
@@ -391,20 +409,20 @@ public class IMGImage {
         if (path == null) return;
 
         float scale = 1f / getScale();
-        Log.d(TAG,"addPath getScale()" + getScale());
-        Log.d(TAG,"addPath scale" + scale);
+        Log.d(TAG, "addPath getScale()" + getScale());
+        Log.d(TAG, "addPath scale" + scale);
         M.setTranslate(sx, sy);
-        Log.d(TAG,"addPath sx" + sx);
-        Log.d(TAG,"addPath sy" + sy);
+        Log.d(TAG, "addPath sx" + sx);
+        Log.d(TAG, "addPath sy" + sy);
         M.postRotate(-getRotate(), mClipFrame.centerX(), mClipFrame.centerY());
-        Log.d(TAG,"addPath -getRotate()" + -getRotate());
-        Log.d(TAG,"addPath mClipFrame.centerX()" + mClipFrame.centerX());
-        Log.d(TAG,"addPath mClipFrame.centerY()" + mClipFrame.centerY());
+        Log.d(TAG, "addPath -getRotate()" + -getRotate());
+        Log.d(TAG, "addPath mClipFrame.centerX()" + mClipFrame.centerX());
+        Log.d(TAG, "addPath mClipFrame.centerY()" + mClipFrame.centerY());
         M.postTranslate(-mFrame.left, -mFrame.top);
-        Log.d(TAG,"addPath -mFrame.left" + -mFrame.left);
-        Log.d(TAG,"addPath -mFrame.top" + -mFrame.top);
+        Log.d(TAG, "addPath -mFrame.left" + -mFrame.left);
+        Log.d(TAG, "addPath -mFrame.top" + -mFrame.top);
         M.postScale(scale, scale);
-        Log.d(TAG,"addPath scale" + scale);
+        Log.d(TAG, "addPath scale" + scale);
         // 矩阵变换
         path.transform(M);
 
@@ -420,6 +438,7 @@ public class IMGImage {
     }
 
     private void moveToForeground(IMGSticker sticker) {
+        Log.d(TAG, "moveToForeground");
         if (sticker == null) return;
 
         moveToBackground(mForeSticker);
@@ -432,6 +451,7 @@ public class IMGImage {
     }
 
     private void moveToBackground(IMGSticker sticker) {
+        Log.d(TAG, "moveToBackground");
         if (sticker == null) return;
 
         if (!sticker.isShowing()) {
@@ -447,20 +467,24 @@ public class IMGImage {
     }
 
     public void stickAll() {
+        Log.d(TAG, "stickAll");
         moveToBackground(mForeSticker);
     }
 
     public void onDismiss(IMGSticker sticker) {
+        Log.d(TAG, "onDismiss");
         moveToBackground(sticker);
     }
 
     public void onShowing(IMGSticker sticker) {
+        Log.d(TAG, "onShowing");
         if (mForeSticker != sticker) {
             moveToForeground(sticker);
         }
     }
 
     public void onRemoveSticker(IMGSticker sticker) {
+        Log.d(TAG, "onRemoveSticker");
         if (mForeSticker == sticker) {
             mForeSticker = null;
         } else {
@@ -469,6 +493,7 @@ public class IMGImage {
     }
 
     public void onWindowChanged(float width, float height) {
+        Log.d(TAG, "onWindowChanged");
         if (width == 0 || height == 0) {
             return;
         }
@@ -489,6 +514,7 @@ public class IMGImage {
     }
 
     private void onInitialHoming(float width, float height) {
+        Log.d(TAG, "onInitialHoming");
         mFrame.set(0, 0, mImage.getWidth(), mImage.getHeight());
         mClipFrame.set(mFrame);
         mClipWin.setClipWinSize(width, height);
@@ -504,6 +530,7 @@ public class IMGImage {
     }
 
     private void toBaseHoming() {
+        Log.d(TAG, "toBaseHoming");
         if (mClipFrame.isEmpty()) {
             // Bitmap invalidate.
             return;
@@ -522,12 +549,14 @@ public class IMGImage {
     }
 
     private void onInitialHomingDone() {
+        Log.d(TAG, "onInitialHomingDone");
         if (mMode == IMGMode.CLIP) {
             mClipWin.reset(mClipFrame, getTargetRotate());
         }
     }
 
     public void onDrawImage(Canvas canvas) {
+        Log.d(TAG, "onDrawImage");
 
         // 裁剪区域
         canvas.clipRect(mClipWin.isClipping() ? mFrame : mClipFrame);
@@ -545,6 +574,7 @@ public class IMGImage {
     }
 
     public int onDrawMosaicsPath(Canvas canvas) {
+        Log.d(TAG, "onDrawMosaicsPath");
         int layerCount = canvas.saveLayer(mFrame, null, Canvas.ALL_SAVE_FLAG);
 
         if (!isMosaicEmpty()) {
@@ -562,11 +592,13 @@ public class IMGImage {
     }
 
     public void onDrawMosaic(Canvas canvas, int layerCount) {
+        Log.d(TAG, "onDrawMosaic");
         canvas.drawBitmap(mMosaicImage, null, mFrame, mMosaicPaint);
         canvas.restoreToCount(layerCount);
     }
 
     public void onDrawDoodles(Canvas canvas) {
+        Log.d(TAG, "onDrawDoodles");
         if (!isDoodleEmpty()) {
             canvas.save();
             float scale = getScale();
@@ -580,12 +612,14 @@ public class IMGImage {
     }
 
     public void onDrawStickerClip(Canvas canvas) {
+        Log.d(TAG, "onDrawStickerClip");
         M.setRotate(getRotate(), mClipFrame.centerX(), mClipFrame.centerY());
         M.mapRect(mTempClipFrame, mClipWin.isClipping() ? mFrame : mClipFrame);
         canvas.clipRect(mTempClipFrame);
     }
 
     public void onDrawStickers(Canvas canvas) {
+        Log.d(TAG, "onDrawStickers");
         if (mBackStickers.isEmpty()) return;
         canvas.save();
         for (IMGSticker sticker : mBackStickers) {
@@ -607,6 +641,7 @@ public class IMGImage {
     }
 
     public void onDrawShade(Canvas canvas) {
+        Log.d(TAG, "onDrawShade");
         if (mMode == IMGMode.CLIP && isSteady) {
             mShade.reset();
             mShade.addRect(mFrame.left - 2, mFrame.top - 2, mFrame.right + 2, mFrame.bottom + 2, Path.Direction.CW);
@@ -616,12 +651,14 @@ public class IMGImage {
     }
 
     public void onDrawClip(Canvas canvas, float scrollX, float scrollY) {
+        Log.d(TAG, "onDrawClip");
         if (mMode == IMGMode.CLIP) {
             mClipWin.onDraw(canvas);
         }
     }
 
     public void onTouchDown(float x, float y) {
+        Log.d(TAG, "onTouchDown");
         isSteady = false;
         moveToBackground(mForeSticker);
         if (mMode == IMGMode.CLIP) {
@@ -630,12 +667,14 @@ public class IMGImage {
     }
 
     public void onTouchUp(float scrollX, float scrollY) {
+        Log.d(TAG, "onTouchUp");
         if (mAnchor != null) {
             mAnchor = null;
         }
     }
 
     public void onSteady(float scrollX, float scrollY) {
+        Log.d(TAG, "onSteady");
         isSteady = true;
         onClipHoming();
         mClipWin.setShowShade(true);
@@ -646,6 +685,7 @@ public class IMGImage {
     }
 
     public IMGHoming onScroll(float scrollX, float scrollY, float dx, float dy) {
+        Log.d(TAG, "onScroll");
         if (mMode == IMGMode.CLIP) {
             mClipWin.setShowShade(false);
             if (mAnchor != null) {
@@ -665,10 +705,12 @@ public class IMGImage {
     }
 
     public float getTargetRotate() {
+        Log.d(TAG, "getTargetRotate");
         return mTargetRotate;
     }
 
     public void setTargetRotate(float targetRotate) {
+        Log.d(TAG, "setTargetRotate");
         this.mTargetRotate = targetRotate;
     }
 
@@ -676,31 +718,38 @@ public class IMGImage {
      * 在当前基础上旋转
      */
     public void rotate(int rotate) {
+        Log.d(TAG, "rotate");
         mTargetRotate = Math.round((mRotate + rotate) / 90f) * 90;
         mClipWin.reset(mClipFrame, getTargetRotate());
     }
 
     public float getRotate() {
+        Log.d(TAG, "getRotate");
         return mRotate;
     }
 
     public void setRotate(float rotate) {
+        Log.d(TAG, "setRotate");
         mRotate = rotate;
     }
 
     public float getScale() {
+        Log.d(TAG, "getScale");
         return 1f * mFrame.width() / mImage.getWidth();
     }
 
     public void setScale(float scale) {
+        Log.d(TAG, "setScale");
         setScale(scale, mClipFrame.centerX(), mClipFrame.centerY());
     }
 
     public void setScale(float scale, float focusX, float focusY) {
+        Log.d(TAG, "setScale");
         onScale(scale / getScale(), focusX, focusY);
     }
 
     public void onScale(float factor, float focusX, float focusY) {
+        Log.d(TAG, "onScale");
 
         if (factor == 1f) return;
 
@@ -730,19 +779,22 @@ public class IMGImage {
     }
 
     public void onScaleEnd() {
-
+        Log.d(TAG, "onScaleEnd");
     }
 
     public void onHomingStart(boolean isRotate) {
+        Log.d(TAG, "onHomingStart");
         isAnimCanceled = false;
         isDrawClip = true;
     }
 
     public void onHoming(float fraction) {
+        Log.d(TAG, "onHoming");
         mClipWin.homing(fraction);
     }
 
     public boolean onHomingEnd(float scrollX, float scrollY, boolean isRotate) {
+        Log.d(TAG, "onHomingEnd");
         isDrawClip = true;
         if (mMode == IMGMode.CLIP) {
             // 开启裁剪模式
@@ -763,10 +815,12 @@ public class IMGImage {
     }
 
     public boolean isFreezing() {
+        Log.d(TAG, "isFreezing");
         return isFreezing;
     }
 
     private void setFreezing(boolean freezing) {
+        Log.d(TAG, "setFreezing");
         if (freezing != isFreezing) {
             rotateStickers(freezing ? -getRotate() : getTargetRotate());
             isFreezing = freezing;
@@ -774,11 +828,13 @@ public class IMGImage {
     }
 
     public void onHomingCancel(boolean isRotate) {
+        Log.d(TAG, "onHomingCancel");
         isAnimCanceled = true;
         Log.d(TAG, "Homing cancel");
     }
 
     public void release() {
+        Log.d(TAG, "release");
         if (mImage != null && !mImage.isRecycled()) {
             mImage.recycle();
         }
@@ -786,6 +842,7 @@ public class IMGImage {
 
     @Override
     protected void finalize() throws Throwable {
+        Log.d(TAG, "finalize");
         super.finalize();
         if (DEFAULT_IMAGE != null) {
             DEFAULT_IMAGE.recycle();
