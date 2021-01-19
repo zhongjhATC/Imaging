@@ -297,6 +297,9 @@ public class IMGImage {
         mClipWin.reset(mClipFrame, getTargetRotate());
     }
 
+    /**
+     * 创建同样的马赛克图和马赛克画笔
+     */
     private void makeMosaicBitmap() {
         Log.d(TAG, "makeMosaicBitmap");
         if (mMosaicImage != null || mImage == null) {
@@ -305,9 +308,11 @@ public class IMGImage {
 
         if (mMode == IMGMode.MOSAIC) {
 
+            // 原图的宽高相除64
             int w = Math.round(mImage.getWidth() / 64f);
             int h = Math.round(mImage.getHeight() / 64f);
 
+            // 取最大值，即不能小于8
             w = Math.max(w, 8);
             h = Math.max(h, 8);
 
@@ -318,6 +323,7 @@ public class IMGImage {
                 mMosaicPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
             }
 
+            // 创建马赛克图
             mMosaicImage = Bitmap.createScaledBitmap(mImage, w, h, false);
         }
     }
@@ -405,6 +411,14 @@ public class IMGImage {
         }
     }
 
+    /**
+     * addPath方法详解：
+     * M.setTranslate(sx, sy);
+     * 矩阵平移到跟view的xy轴一样,注意，是getScrollX()和getScrolly()
+     *
+     * M.postTranslate(-mFrame.left, -mFrame.top);
+     * 如果按照getScrollX()直接绘制进手机屏幕上是会出格的，因为view能缩放到比手机屏幕还要大，那么就需要减掉mFrame的x和y，剩下的就是手机绘制的正确的点
+     */
     public void addPath(IMGPath path, float sx, float sy) {
         if (path == null) return;
 
@@ -733,6 +747,9 @@ public class IMGImage {
         mRotate = rotate;
     }
 
+    /**
+     * 1 * view缩放后的宽度 / 图片固定宽度 = 缩放比例
+     */
     public float getScale() {
         Log.d(TAG, "getScale");
         return 1f * mFrame.width() / mImage.getWidth();
