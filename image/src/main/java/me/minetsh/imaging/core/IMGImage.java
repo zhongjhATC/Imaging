@@ -77,7 +77,10 @@ public class IMGImage {
      */
     private IMGMode mMode = IMGMode.NONE;
 
-    private boolean isFreezing = mMode == IMGMode.CLIP;
+    /**
+     * 是否冻结的
+     */
+    private boolean isFreezing = false;
 
     /**
      * 可视区域，无Scroll 偏移区域
@@ -837,6 +840,9 @@ public class IMGImage {
         return false;
     }
 
+    /**
+     * 是否冻结的
+     */
     public boolean isFreezing() {
         Log.d(TAG, "isFreezing");
         return isFreezing;
