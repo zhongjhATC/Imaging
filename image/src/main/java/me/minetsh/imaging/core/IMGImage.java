@@ -588,7 +588,7 @@ public class IMGImage {
     }
 
     /**
-     * 绘制马赛克路径，显示马赛克图片
+     * 绘制马赛克路径
      */
     public int onDrawMosaicsPath(Canvas canvas) {
         Log.d(TAG, "onDrawMosaicsPath");
