@@ -587,6 +587,9 @@ public class IMGImage {
         }
     }
 
+    /**
+     * 绘制马赛克路径，显示马赛克图片
+     */
     public int onDrawMosaicsPath(Canvas canvas) {
         Log.d(TAG, "onDrawMosaicsPath");
         int layerCount = canvas.saveLayer(mFrame, null, Canvas.ALL_SAVE_FLAG);
@@ -605,6 +608,9 @@ public class IMGImage {
         return layerCount;
     }
 
+    /**
+     * 绘制马赛克
+     */
     public void onDrawMosaic(Canvas canvas, int layerCount) {
         Log.d(TAG, "onDrawMosaic");
         canvas.drawBitmap(mMosaicImage, null, mFrame, mMosaicPaint);
