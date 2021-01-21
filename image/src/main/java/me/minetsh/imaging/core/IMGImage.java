@@ -350,11 +350,17 @@ public class IMGImage {
         return mClipWin.homing();
     }
 
+    /**
+     * 当前的位置、缩放、旋转
+     */
     public IMGHoming getStartHoming(float scrollX, float scrollY) {
         Log.d(TAG, "getStartHoming: scrollX(" + scrollX + ") scrollY(" + scrollY + ") getScale(" + getScale() + ") getRotate(" + getRotate() + ")");
         return new IMGHoming(scrollX, scrollY, getScale(), getRotate());
     }
 
+    /**
+     * 想回到的位置、缩放、旋转
+     */
     public IMGHoming getEndHoming(float scrollX, float scrollY) {
         IMGHoming homing = new IMGHoming(scrollX, scrollY, getScale(), getTargetRotate());
         Log.d(TAG, "getEndHoming: homing.x(" + homing.x + ") homing.y(" + homing.y + ") homing.scale(" + homing.scale + ") homing.rotate(" + homing.rotate + ")");
@@ -402,7 +408,6 @@ public class IMGImage {
             homing.rConcat(IMGUtils.fitHoming(win, clipFrame, isRequestToBaseFitting));
             isRequestToBaseFitting = false;
         }
-
         Log.d(TAG, "getEndHoming: homing.x(" + homing.x + ") homing.y(" + homing.y + ") homing.scale(" + homing.scale + ") homing.rotate(" + homing.rotate + ")");
         return homing;
     }
